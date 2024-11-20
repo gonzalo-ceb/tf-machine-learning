@@ -1,0 +1,8 @@
+.DS_Store
+
+# Ignorar todo en notebooks/
+notebooks/*
+
+# Exceptuar los archivos .ipynb y .gitkeep
+!notebooks/*.ipynb
+!notebooks/.gitkeep
