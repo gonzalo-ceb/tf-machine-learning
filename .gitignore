@@ -6,3 +6,6 @@ notebooks/*
 # Exceptuar los archivos .ipynb y .gitkeep
 !notebooks/*.ipynb
 !notebooks/.gitkeep
+
+data/
+ifood-2019-fgvc6/
