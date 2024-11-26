@@ -1,56 +1,88 @@
 import gradio as gr
 
-# Simulación de predicción con probabilidades
-def predict_with_confidence(image):
-    # Ejemplo de categorías y probabilidades
-    predictions = {
-        "Pizza 🍕": 0.85,
-        "Sushi 🍣": 0.10,
-        "Hamburguesa 🍔": 0.05,
-    }
+mapeo_alergias = {
+    'fried_egg': ['egg'],
+    'omelette': ['egg'],
+    'eggs_benedict': ['egg'],
+    'lobster': ['shellfish'],
+    'shrimp': ['shellfish'],
+    'clam': ['shellfish'],
+    'crab': ['shellfish'],
+    'cheesecake': ['lactose'],
+    'ice_cream': ['lactose'],
+    'macaroni_and_cheese': ['lactose'],
+    'peanut_butter': ['peanut'],
+    'pad_thai': ['peanut'],
+    'chicken_curry': [],
+    'tiramisu': ['lactose', 'gluten'],
+    'pizza': ['gluten', 'lactose'],
+    'hamburger': ['gluten'],
+    'sushi': ['fish'],
+    'tempura': ['shellfish'],
+    'baklava': ['nuts'],
+    'greek_salad': ['lactose'],
+    'paella': ['shellfish'],
+}
 
-    # Crear barras visuales con texto destacado
-    highlighted_text = []
-    for category, confidence in predictions.items():
-        # Si la confianza es mayor al 80%, verde; si no, rojo
-        if confidence > 0.80:
-            color = "green"
+def deteccion_alergias(yolo_detections, mapeo_alergias):
+    resultados_alergias = {}
+    for detection in yolo_detections:
+        if detection in mapeo_alergias:
+            resultados_alergias[detection] = mapeo_alergias[detection]
         else:
-            color = "red"
-        
-        highlighted_text.append((f"{category}: {confidence*100:.1f}%", color))
+            resultados_alergias[detection] = []
+    return resultados_alergias
 
-    # Categoría principal predicha
+# EJEMPLO
+def predict_with_allergens(image):
+    predictions = {
+        "pizza": 0.85,
+        "sushi": 0.10,
+        "hamburger": 0.05,
+    }
+    detected_classes = [key for key, value in predictions.items() if value > 0.05]
+
+    # POSIBLES ALÉRGENOS
+    allergens = deteccion_alergias(detected_classes, mapeo_alergias)
+
+    highlighted_text = "\n".join(
+        f"• {category.capitalize()}: {confidence * 100:.1f}%" for category, confidence in predictions.items()
+    )
+
+    # FORMATEO PARA QUE SE VEA MEJOR
+    allergens_detected = "\n".join(
+        f"{k.capitalize()}: {', '.join(v)}" for k, v in allergens.items() if v
+    ) or "Sin alérgenos detectados"
+
     predicted_category = max(predictions, key=predictions.get)
-    return predicted_category, highlighted_text
 
-# Construcción de la interfaz en Gradio
+    return predicted_category, highlighted_text, allergens_detected
+
+# INTERFAZ
 with gr.Blocks(theme=gr.themes.Soft(primary_hue="teal")) as demo:
-    gr.Markdown("# 🍲 **Food Classifier App**")
-    gr.Markdown("Sube una imagen y descubre el alimento. ¡Es rápido y visual!")
+    gr.Markdown("# 🥗 **Food Allergy Detector App**")
+    gr.Markdown("Sube una imagen para clasificar alimentos y verificar posibles alérgenos.")
 
-    # Entrada de imagen
     with gr.Row():
         image_input = gr.Image(label="Sube tu imagen aquí", type="pil")
 
-    # Salida: Resultado principal y barra visual
     with gr.Row():
-        result = gr.Label(label="Categoría del alimento")  # Salida de la categoría principal
-        confidence_chart = gr.HighlightedText(label="Confianza de Predicción")  # Barras visuales
+        result = gr.Label(label="Categoría del alimento")
+        confidence_chart = gr.Textbox(label="Confianza de Predicción")
+        allergens_output = gr.Textbox(label="Posibles alérgenos detectados")
 
-    # Botón de predicción
     with gr.Row():
-        submit_button = gr.Button("Clasificar 🚀")
+        submit_button = gr.Button("Clasificar y Verificar 🚀")
 
-    # Conexión del botón a la función de predicción
-    submit_button.click(predict_with_confidence, inputs=image_input, outputs=[result, confidence_chart])
+    submit_button.click(predict_with_allergens, inputs=image_input, outputs=[result, confidence_chart, allergens_output])
 
-    # Pie de página
     gr.Markdown("---")
     gr.Markdown("**Creado por Gonzalo Celaya y Sandra González**")
 
-# Lanza la app
+
 demo.launch()
+
+
 
 
 
