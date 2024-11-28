@@ -1,26 +1,25 @@
 from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import JSONResponse
-import uvicorn
 
-# Inicializar la aplicación FastAPI
 app = FastAPI()
 
-# Simulación de detecciones del modelo YOLO
-def detect_food(image: bytes):
-    # Simular detecciones y confianza
-    detections = {
-        "pizza": 0.85,
-        "sushi": 0.10,
-        "hamburger": 0.05,
+# Suponiendo que tienes una función para procesar la imagen y hacer la predicción
+def procesar_imagen(image):
+    # Aquí iría tu código para procesar la imagen y hacer la predicción
+    # Por ejemplo, cargar el modelo y predecir la categoría de la imagen
+    prediccion = {
+        "categoria": "pizza",
+        "confianza": "85%",
+        "alergenos": "gluten, lactosa"
     }
-    return detections
+    return prediccion
 
-# Ruta para recibir la imagen y retornar predicciones
-@app.post("/predict/")
+@app.post("/predict")
 async def predict(file: UploadFile = File(...)):
-    image_data = await file.read()
-    predictions = detect_food(image_data)
-    return JSONResponse(content={"predictions": predictions})
+    # Procesar la imagen recibida
+    image = await file.read()  
+    prediccion = procesar_imagen(image)  
 
-if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    return JSONResponse(content=prediccion)
+
+

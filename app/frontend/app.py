@@ -1,64 +1,24 @@
 import gradio as gr
+import requests 
 
-mapeo_alergias = {
-    'fried_egg': ['egg'],
-    'omelette': ['egg'],
-    'eggs_benedict': ['egg'],
-    'lobster': ['shellfish'],
-    'shrimp': ['shellfish'],
-    'clam': ['shellfish'],
-    'crab': ['shellfish'],
-    'cheesecake': ['lactose'],
-    'ice_cream': ['lactose'],
-    'macaroni_and_cheese': ['lactose'],
-    'peanut_butter': ['peanut'],
-    'pad_thai': ['peanut'],
-    'chicken_curry': [],
-    'tiramisu': ['lactose', 'gluten'],
-    'pizza': ['gluten', 'lactose'],
-    'hamburger': ['gluten'],
-    'sushi': ['fish'],
-    'tempura': ['shellfish'],
-    'baklava': ['nuts'],
-    'greek_salad': ['lactose'],
-    'paella': ['shellfish'],
-}
+BACKEND_URL = "http://backend:8000/predict"  
 
-def deteccion_alergias(yolo_detections, mapeo_alergias):
-    resultados_alergias = {}
-    for detection in yolo_detections:
-        if detection in mapeo_alergias:
-            resultados_alergias[detection] = mapeo_alergias[detection]
-        else:
-            resultados_alergias[detection] = []
-    return resultados_alergias
-
-# EJEMPLO
 def predict_with_allergens(image):
-    predictions = {
-        "pizza": 0.85,
-        "sushi": 0.10,
-        "hamburger": 0.05,
-    }
-    detected_classes = [key for key, value in predictions.items() if value > 0.05]
+    response = requests.post(BACKEND_URL, files={"file": image})
+    
+    if response.status_code == 200:
+        prediction = response.json()  
+        predicted_category = prediction["category"]
+        allergens_detected = prediction["allergens"]
+        confidence_chart = prediction["confidence"]
+    else:
+        predicted_category = "Error"
+        allergens_detected = "Error"
+        confidence_chart = "Error"
+    
+    return predicted_category, confidence_chart, allergens_detected
 
-    # POSIBLES ALÉRGENOS
-    allergens = deteccion_alergias(detected_classes, mapeo_alergias)
-
-    highlighted_text = "\n".join(
-        f"• {category.capitalize()}: {confidence * 100:.1f}%" for category, confidence in predictions.items()
-    )
-
-    # FORMATEO PARA QUE SE VEA MEJOR
-    allergens_detected = "\n".join(
-        f"{k.capitalize()}: {', '.join(v)}" for k, v in allergens.items() if v
-    ) or "Sin alérgenos detectados"
-
-    predicted_category = max(predictions, key=predictions.get)
-
-    return predicted_category, highlighted_text, allergens_detected
-
-# INTERFAZ
+# INTERFAZ GRADIO
 with gr.Blocks(theme=gr.themes.Soft(primary_hue="teal")) as demo:
     gr.Markdown("# 🥗 **Food Allergy Detector App**")
     gr.Markdown("Sube una imagen para clasificar alimentos y verificar posibles alérgenos.")
@@ -79,12 +39,4 @@ with gr.Blocks(theme=gr.themes.Soft(primary_hue="teal")) as demo:
     gr.Markdown("---")
     gr.Markdown("**Creado por Gonzalo Celaya y Sandra González**")
 
-
 demo.launch()
-
-
-
-
-
-
-
