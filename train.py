@@ -5,7 +5,7 @@ from tqdm import tqdm
 device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
 
 # HIPERPARÁMETROS
-epochs = 2
+epochs = 5
 batch_size = 8
 img_size = 640  
 weights = "yolov8n.pt"  

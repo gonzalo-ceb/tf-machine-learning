@@ -9,6 +9,3 @@ notebooks/*
 
 data/
 ifood-2019-fgvc6/
-
-runs/
-*.pt
