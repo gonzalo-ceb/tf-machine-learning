@@ -1,14 +1,17 @@
-FROM python:3.9-slim
+# Usamos la imagen base de Python
+FROM python:3.10-slim
 
+# Establecemos el directorio de trabajo en el contenedor
 WORKDIR /app
 
-COPY requirements.txt .
-
-RUN pip install -r requirements.txt
-
+# Copiamos los archivos de nuestro backend al contenedor
 COPY main.py .
 
+# Instalamos las dependencias necesarias
+RUN pip install --no-cache-dir fastapi uvicorn pillow
+
+# Exponemos el puerto 8000 donde FastAPI escuchará las solicitudes
 EXPOSE 8000
 
+# Comando para iniciar el servidor de FastAPI
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
-

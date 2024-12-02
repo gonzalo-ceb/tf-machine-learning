@@ -1,12 +1,17 @@
-FROM python:3.9-slim
+# Usamos la imagen base de Python
+FROM python:3.10-slim
 
+# Establecemos el directorio de trabajo en el contenedor
 WORKDIR /app
 
+# Copiamos los archivos de nuestro frontend al contenedor
 COPY app.py .
 
-RUN pip install gradio
+# Instalamos las dependencias necesarias
+RUN pip install --no-cache-dir gradio requests
 
+# Exponemos el puerto 7860 donde Gradio escuchará las solicitudes
 EXPOSE 7860
 
+# Comando para iniciar la aplicación de Gradio
 CMD ["python", "app.py"]
-

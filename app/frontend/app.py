@@ -1,26 +1,27 @@
 import gradio as gr
-import requests 
+import requests
 
-BACKEND_URL = "http://backend:8000/predict"  
+BACKEND_URL = "http://backend:8000/predict"
 
 def predict_with_allergens(image):
+    # Realizamos una solicitud POST al backend con la imagen
     response = requests.post(BACKEND_URL, files={"file": image})
-    
+
     if response.status_code == 200:
-        prediction = response.json()  
-        predicted_category = prediction["category"]
-        allergens_detected = prediction["allergens"]
-        confidence_chart = prediction["confidence"]
+        prediction = response.json()
+        predicted_category = prediction["categoria"]
+        allergens_detected = prediction["alergenos"]
+        confidence = prediction["confianza"]
     else:
         predicted_category = "Error"
         allergens_detected = "Error"
-        confidence_chart = "Error"
+        confidence = "Error"
     
-    return predicted_category, confidence_chart, allergens_detected
+    return predicted_category, confidence, allergens_detected
 
-# INTERFAZ GRADIO
-with gr.Blocks(theme=gr.themes.Soft(primary_hue="teal")) as demo:
-    gr.Markdown("# 🥗 **Food Allergy Detector App**")
+# Crear la interfaz Gradio
+with gr.Blocks() as demo:
+    gr.Markdown("# **Food Allergy Detector App**")
     gr.Markdown("Sube una imagen para clasificar alimentos y verificar posibles alérgenos.")
 
     with gr.Row():
@@ -39,4 +40,4 @@ with gr.Blocks(theme=gr.themes.Soft(primary_hue="teal")) as demo:
     gr.Markdown("---")
     gr.Markdown("**Creado por Gonzalo Celaya y Sandra González**")
 
-demo.launch()
+demo.launch(server_name="0.0.0.0", server_port=7860)
