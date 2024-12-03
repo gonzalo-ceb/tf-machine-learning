@@ -8,7 +8,7 @@ WORKDIR /app
 COPY main.py .
 
 # Instalamos las dependencias necesarias
-RUN pip install --no-cache-dir fastapi uvicorn pillow
+RUN pip install --no-cache-dir fastapi uvicorn ultralytics pillow
 
 # Exponemos el puerto 8000 donde FastAPI escuchará las solicitudes
 EXPOSE 8000

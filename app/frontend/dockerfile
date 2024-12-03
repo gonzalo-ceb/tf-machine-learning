@@ -8,7 +8,11 @@ WORKDIR /app
 COPY app.py .
 
 # Instalamos las dependencias necesarias
-RUN pip install --no-cache-dir gradio requests
+RUN pip install --no-cache-dir gradio requests ultralytics torch torchvision
+RUN apt-get update && apt-get install -y \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
+    && apt-get clean
 
 # Exponemos el puerto 7860 donde Gradio escuchará las solicitudes
 EXPOSE 7860
