@@ -5,7 +5,15 @@ notebooks/*
 
 # Exceptuar los archivos .ipynb y .gitkeep
 !notebooks/*.ipynb
+!notebooks/3_train.py
 !notebooks/.gitkeep
 
-data/
+# Ignorar todo en data/
+data/*
+
+# Exceptuar los archivos .pt, .gitkeep y runs
+!data/runs
+!data/*.pt
+!data/.gitkeep
+
 ifood-2019-fgvc6/
