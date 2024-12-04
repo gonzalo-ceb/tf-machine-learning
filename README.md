@@ -10,7 +10,7 @@ Nuestro repositorio: [TF Machine Learning](https://github.com/gonzalo-ceb/tf-mac
 
 ## Objetivo
 
-Crear un sistema eficiente para la detección y clasificación de alimentos que pueda identificar alérgenos, facilitando su uso en entornos reales.
+Crear un sistema para la detección y clasificación de alimentos que pueda identificar alérgenos.
 
 El proyecto combina visión por computadora y procesamiento del lenguaje natural (NLP) para un enfoque integral.
 
@@ -23,7 +23,7 @@ El equipo está compuesto por dos integrantes con diferentes entornos de trabajo
 
 ### 2. Definición del Problema
 Queríamos:
-1. Detectar alimentos en imágenes.
+1. Clasificar alimentos en categorías.
 2. Identificar posibles alérgenos mediante una función.
 
 ### 3. Selección del Modelo
